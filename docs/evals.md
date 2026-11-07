@@ -1,3 +1,3 @@
 # Evals
 
-How we measure whether groundcheck correctly flags unsupported claims.
+How we measure whether groundlint correctly flags unsupported claims.
