@@ -2,7 +2,7 @@
 
 Tracks which missions are complete and what comes next.
 
-- [ ] Mission 0
-- [ ] Mission 1
-- [ ] Mission 2
-- [ ] Mission 3
+- [x] Mission 0: Build the workspace
+- [ ] Mission 1: Discover and scope
+- [ ] Mission 2: Design the system
+- [ ] Mission 3: Ship the first slice
