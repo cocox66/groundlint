@@ -1,0 +1,62 @@
+{
+  "source": "source.md",
+  "answer": "answer.md",
+  "claims": [
+    {
+      "id": "c1",
+      "claim": "The EMPA-REG OUTCOME trial tested Jardiance in adults with type 2 diabetes and established atherosclerotic cardiovascular disease.",
+      "sentence": "In the EMPA-REG OUTCOME trial, Jardiance was tested in adults with type 2 diabetes and established atherosclerotic cardiovascular disease, and patients were followed for a median of 3.1 years.",
+      "expected": "supported",
+      "error_type": "none",
+      "quote": "The effect of JARDIANCE on cardiovascular (CV) risk in adult patients with type 2 diabetes mellitus and established, stable, atherosclerotic CV disease was evaluated in the EMPA-REG OUTCOME trial"
+    },
+    {
+      "id": "c2",
+      "claim": "Patients in the EMPA-REG OUTCOME trial were followed for a median of 3.1 years.",
+      "sentence": "In the EMPA-REG OUTCOME trial, Jardiance was tested in adults with type 2 diabetes and established atherosclerotic cardiovascular disease, and patients were followed for a median of 3.1 years.",
+      "expected": "supported",
+      "error_type": "none",
+      "quote": "followed for a median of 3.1 years."
+    },
+    {
+      "id": "c3",
+      "claim": "Other diabetes medicines were kept stable for the first 24 weeks of the EMPA-REG OUTCOME trial.",
+      "sentence": "Other diabetes medicines were kept stable for the first 24 weeks of the trial.",
+      "expected": "contradicted",
+      "error_type": "changed_number",
+      "quote": "Concomitant antidiabetic medications were to be kept stable for the first 12 weeks of the trial."
+    },
+    {
+      "id": "c4",
+      "claim": "Jardiance significantly reduced the risk of the combined endpoint of CV death, non-fatal myocardial infarction or non-fatal stroke.",
+      "sentence": "Jardiance significantly reduced the risk of the combined endpoint of CV death, non-fatal myocardial infarction or non-fatal stroke.",
+      "expected": "supported",
+      "error_type": "none",
+      "quote": "JARDIANCE significantly reduced the risk of first occurrence of primary composite endpoint of CV death, non-fatal myocardial infarction, or non-fatal stroke"
+    },
+    {
+      "id": "c5",
+      "claim": "Jardiance significantly lowered the risk of non-fatal stroke on its own.",
+      "sentence": "It also significantly lowered the risk of non-fatal stroke on its own.",
+      "expected": "contradicted",
+      "error_type": "reversed_finding",
+      "quote": null
+    },
+    {
+      "id": "c6",
+      "claim": "Jardiance lowers cardiovascular risk in all adults with type 2 diabetes.",
+      "sentence": "Based on this trial, Jardiance lowers cardiovascular risk in all adults with type 2 diabetes.",
+      "expected": "unsupported",
+      "error_type": "overextended_population",
+      "quote": null
+    },
+    {
+      "id": "c7",
+      "claim": "Jardiance reduced hospitalizations for heart failure.",
+      "sentence": "Jardiance also reduced hospitalizations for heart failure.",
+      "expected": "unsupported",
+      "error_type": "no_source",
+      "quote": null
+    }
+  ]
+}
