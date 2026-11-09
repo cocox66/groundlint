@@ -10,6 +10,13 @@ Each answer contains deliberately planted errors (a changed number, a reversed f
 
 All three sources were retrieved on 2026-11-08.
 
+## What the verdicts mean
+
+groundlint judges each claim only against the sources it's given:
+
+- `unsupported` means the claim is **not established by the given sources**. It does not mean the claim is false. The "no source" claims here are a deliberate example: the full drug labels likely cover topics such as food or grapefruit juice, but these short excerpts don't, so the claims are `unsupported`.
+- `contradicted` means the given sources conflict with the claim.
+
 ## Cases
 
 ### apixaban-dosing

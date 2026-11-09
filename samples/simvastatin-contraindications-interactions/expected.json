@@ -46,7 +46,7 @@
       "id": "c6",
       "claim": "Adults with high cholesterol can be started on the 80 mg daily dose of Zocor.",
       "sentence": "Adults with high cholesterol can be started on the 80 mg daily dose.",
-      "expected": "unsupported",
+      "expected": "contradicted",
       "error_type": "overextended_population",
       "quote": null
     },
