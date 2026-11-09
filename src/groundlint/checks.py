@@ -19,7 +19,7 @@ import re
 import unicodedata
 from dataclasses import dataclass, replace
 from decimal import Decimal
-from typing import Iterable
+from typing import Iterable, NamedTuple
 
 from groundlint.models import Downgrade, Judgment, Source, Verdict
 
@@ -49,33 +49,37 @@ def _normalize(text: str) -> str:
 
 # --- Quantities --------------------------------------------------------------
 
-# family, factor to the family's base unit
-_UNITS: dict[str, tuple[str, Decimal]] = {
-    "mcg": ("mass", Decimal("0.000001")),
-    "μg": ("mass", Decimal("0.000001")),
-    "mg": ("mass", Decimal("0.001")),
-    "g": ("mass", Decimal("1")),
-    "kg": ("mass", Decimal("1000")),
-    "ml": ("volume", Decimal("0.001")),
-    "l": ("volume", Decimal("1")),
-    "h": ("short time", Decimal("1")),
-    "hr": ("short time", Decimal("1")),
-    "hrs": ("short time", Decimal("1")),
-    "hour": ("short time", Decimal("1")),
-    "hours": ("short time", Decimal("1")),
-    "day": ("short time", Decimal("24")),
-    "days": ("short time", Decimal("24")),
-    "wk": ("short time", Decimal("168")),
-    "wks": ("short time", Decimal("168")),
-    "week": ("short time", Decimal("168")),
-    "weeks": ("short time", Decimal("168")),
-    "mo": ("long time", Decimal("1")),
-    "month": ("long time", Decimal("1")),
-    "months": ("long time", Decimal("1")),
-    "yr": ("long time", Decimal("12")),
-    "yrs": ("long time", Decimal("12")),
-    "year": ("long time", Decimal("12")),
-    "years": ("long time", Decimal("12")),
+class _Unit(NamedTuple):
+    family: str
+    to_base: Decimal  # multiply by this to get the family's base unit
+
+
+_UNITS: dict[str, _Unit] = {
+    "mcg": _Unit("mass", Decimal("0.000001")),
+    "μg": _Unit("mass", Decimal("0.000001")),
+    "mg": _Unit("mass", Decimal("0.001")),
+    "g": _Unit("mass", Decimal("1")),
+    "kg": _Unit("mass", Decimal("1000")),
+    "ml": _Unit("volume", Decimal("0.001")),
+    "l": _Unit("volume", Decimal("1")),
+    "h": _Unit("short time", Decimal("1")),
+    "hr": _Unit("short time", Decimal("1")),
+    "hrs": _Unit("short time", Decimal("1")),
+    "hour": _Unit("short time", Decimal("1")),
+    "hours": _Unit("short time", Decimal("1")),
+    "day": _Unit("short time", Decimal("24")),
+    "days": _Unit("short time", Decimal("24")),
+    "wk": _Unit("short time", Decimal("168")),
+    "wks": _Unit("short time", Decimal("168")),
+    "week": _Unit("short time", Decimal("168")),
+    "weeks": _Unit("short time", Decimal("168")),
+    "mo": _Unit("long time", Decimal("1")),
+    "month": _Unit("long time", Decimal("1")),
+    "months": _Unit("long time", Decimal("1")),
+    "yr": _Unit("long time", Decimal("12")),
+    "yrs": _Unit("long time", Decimal("12")),
+    "year": _Unit("long time", Decimal("12")),
+    "years": _Unit("long time", Decimal("12")),
 }
 
 # A digit run that directly follows a letter, or a letter and a hyphen, is part
@@ -122,11 +126,16 @@ class _Quantity:
 
     @property
     def family(self) -> str | None:
-        return _UNITS[self.unit][0] if self.unit else None
+        return _UNITS[self.unit].family if self.unit else None
+
+    @property
+    def bare(self) -> _Quantity:
+        """The same quantity without its comparison qualifier, for messages."""
+        return replace(self, qualifier="none")
 
     @property
     def base_value(self) -> Decimal:
-        return self.number * _UNITS[self.unit][1] if self.unit else self.number
+        return self.number * _UNITS[self.unit].to_base if self.unit else self.number
 
     def __str__(self) -> str:
         number = format(self.number.normalize(), "f")
@@ -183,8 +192,7 @@ def _quantities(text: str) -> list[_Quantity]:
 # --- Rules -------------------------------------------------------------------
 
 
-def _quote_rule(judgment: Judgment, sources: Iterable[Source]) -> str | None:
-    quote = _normalize(judgment.quote)
+def _quote_rule(quote: str, judgment: Judgment, sources: Iterable[Source]) -> str | None:
     if not quote:
         return "quote is empty"
     source = next((s for s in sources if s.path == judgment.source_path), None)
@@ -207,7 +215,8 @@ def _match(claimed: _Quantity, quoted: list[_Quantity]) -> _Quantity | None:
     else:
         candidates = [q for q in quoted if q.number == claimed.number]
     same_qualifier = [q for q in candidates if q.qualifier == claimed.qualifier]
-    return (same_qualifier or candidates or [None])[0]
+    pool = same_qualifier or candidates
+    return pool[0] if pool else None
 
 
 def _number_and_comparison_rules(claim: list[_Quantity], quote: list[_Quantity]) -> tuple[str | None, str | None]:
@@ -217,14 +226,14 @@ def _number_and_comparison_rules(claim: list[_Quantity], quote: list[_Quantity])
         if matched is None:
             same_number = next((q for q in quote if q.number == claimed.number), None)
             if claimed.unit and same_number is not None:
-                quoted_text = str(replace(same_number, qualifier="none"))
+                quoted_text = str(same_number.bare)
                 if not same_number.unit:
                     quoted_text += " (no unit)"
                 number_failures.append(
-                    f"unit mismatch: claim {replace(claimed, qualifier='none')}, quote {quoted_text}"
+                    f"unit mismatch: claim {claimed.bare}, quote {quoted_text}"
                 )
             else:
-                number_failures.append(f"number missing: claim {replace(claimed, qualifier='none')} not in quote")
+                number_failures.append(f"number missing: claim {claimed.bare} not in quote")
         elif matched.qualifier != claimed.qualifier:
             comparison_failures.append(f"comparison mismatch: claim {claimed}, quote {matched}")
     return ("; ".join(number_failures) or None, "; ".join(comparison_failures) or None)
@@ -232,10 +241,10 @@ def _number_and_comparison_rules(claim: list[_Quantity], quote: list[_Quantity])
 
 def _frequency_rule(claim_text: str, quote_text: str) -> str | None:
     quoted = {count for _, _, count in _frequency_spans(quote_text)}
+    found = ", ".join(_FREQUENCY_NAME[c] for c in sorted(quoted)) or "none"
     failures = []
     for _, _, count in _frequency_spans(claim_text):
         if count not in quoted:
-            found = ", ".join(_FREQUENCY_NAME[c] for c in sorted(quoted)) or "none"
             failures.append(f"frequency mismatch: claim {_FREQUENCY_NAME[count]}, quote {found}")
     return "; ".join(failures) or None
 
@@ -248,7 +257,7 @@ def check(judgment: Judgment, sources: Iterable[Source]) -> Judgment:
     claim_text, quote_text = _normalize(judgment.claim), _normalize(judgment.quote)
     number, comparison = _number_and_comparison_rules(_quantities(claim_text), _quantities(quote_text))
     results = [
-        ("quote", _quote_rule(judgment, list(sources))),
+        ("quote", _quote_rule(quote_text, judgment, sources)),
         ("number", number),
         ("comparison", comparison),
         ("frequency", _frequency_rule(claim_text, quote_text)),

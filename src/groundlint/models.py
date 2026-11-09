@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 
 
@@ -34,4 +34,4 @@ class Judgment:
     explanation: str
     quote: str
     source_path: str
-    downgrades: tuple[Downgrade, ...] = field(default_factory=tuple)
+    downgrades: tuple[Downgrade, ...] = ()
