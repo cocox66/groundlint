@@ -1,0 +1,62 @@
+{
+  "source": "source.md",
+  "answer": "answer.md",
+  "claims": [
+    {
+      "id": "c1",
+      "claim": "Zocor is contraindicated with strong CYP3A4 inhibitors such as macrolide antibiotics and nefazodone.",
+      "sentence": "Zocor (simvastatin) is contraindicated with strong CYP3A4 inhibitors such as macrolide antibiotics and nefazodone, and it is also contraindicated with cyclosporine, danazol or gemfibrozil.",
+      "expected": "supported",
+      "error_type": "none",
+      "quote": "ZOCOR is contraindicated in the following conditions: Concomitant use of strong CYP3A4 inhibitors (select azole anti-fungals, macrolide antibiotics, anti-viral medications, and nefazodone)."
+    },
+    {
+      "id": "c2",
+      "claim": "Zocor is contraindicated with cyclosporine, danazol or gemfibrozil.",
+      "sentence": "Zocor (simvastatin) is contraindicated with strong CYP3A4 inhibitors such as macrolide antibiotics and nefazodone, and it is also contraindicated with cyclosporine, danazol or gemfibrozil.",
+      "expected": "supported",
+      "error_type": "none",
+      "quote": "Concomitant use of cyclosporine, danazol or gemfibrozil."
+    },
+    {
+      "id": "c3",
+      "claim": "For patients taking amlodipine, the Zocor dose should not exceed 40 mg once daily.",
+      "sentence": "For patients taking amlodipine, the Zocor dose should not exceed 40 mg once daily.",
+      "expected": "contradicted",
+      "error_type": "changed_number",
+      "quote": "Patients taking Amiodarone, Amlodipine, or Ranolazine: Do not exceed ZOCOR 20 mg once daily."
+    },
+    {
+      "id": "c4",
+      "claim": "Patients taking verapamil, diltiazem or dronedarone should not exceed 10 mg of Zocor once daily.",
+      "sentence": "Patients taking verapamil, diltiazem or dronedarone should not exceed 10 mg once daily.",
+      "expected": "supported",
+      "error_type": "none",
+      "quote": "Patients taking Verapamil, Diltiazem, or Dronedarone: Do not exceed ZOCOR 10 mg once daily."
+    },
+    {
+      "id": "c5",
+      "claim": "Zocor is a suitable option for patients with decompensated cirrhosis.",
+      "sentence": "Zocor is a suitable option for patients with decompensated cirrhosis.",
+      "expected": "contradicted",
+      "error_type": "reversed_finding",
+      "quote": null
+    },
+    {
+      "id": "c6",
+      "claim": "Adults with high cholesterol can be started on the 80 mg daily dose of Zocor.",
+      "sentence": "Adults with high cholesterol can be started on the 80 mg daily dose.",
+      "expected": "contradicted",
+      "error_type": "overextended_population",
+      "quote": null
+    },
+    {
+      "id": "c7",
+      "claim": "Patients should avoid drinking large amounts of grapefruit juice while taking Zocor.",
+      "sentence": "Patients should avoid drinking large amounts of grapefruit juice while taking Zocor.",
+      "expected": "unsupported",
+      "error_type": "no_source",
+      "quote": null
+    }
+  ]
+}
