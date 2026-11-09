@@ -110,7 +110,7 @@ _QUALIFIERS: list[tuple[str, str]] = [
     (">", "above"),
 ]
 
-_FREQUENCY = re.compile(r"\b(once|twice|three times|[123] times)\s+(daily|a day|per day)\b")
+_FREQUENCY = re.compile(r"\b(once|twice|three times|[123] times)[\s-]+(daily|a day|per day)\b")
 _FREQUENCY_COUNT = {"once": 1, "twice": 2, "three times": 3, "1 times": 1, "2 times": 2, "3 times": 3}
 _FREQUENCY_NAME = {1: "once daily", 2: "twice daily", 3: "three times daily"}
 
@@ -198,9 +198,19 @@ def _quote_rule(quote: str, judgment: Judgment, sources: Iterable[Source]) -> st
     source = next((s for s in sources if s.path == judgment.source_path), None)
     if source is None:
         return f"cited source not loaded: {judgment.source_path}"
-    if quote not in _normalize(source.text):
+    if not _quote_pattern(quote).search(_normalize(source.text)):
         return f"quote not found in {judgment.source_path}"
     return None
+
+
+def _quote_pattern(quote: str) -> re.Pattern[str]:
+    """Match the quote only where it isn't cut from inside a longer word or number.
+
+    Without this, the quote "5 mg" would be found inside "2.5 mg" and "10 mg" inside "110 mg".
+    """
+    before = r"(?<!\w)(?<!\d\.)" if quote[0].isalnum() else ""
+    after = r"(?!\w)(?!\.\d)" if quote[-1].isalnum() else ""
+    return re.compile(before + re.escape(quote) + after)
 
 
 def _match(claimed: _Quantity, quoted: list[_Quantity]) -> _Quantity | None:
