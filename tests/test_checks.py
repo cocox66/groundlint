@@ -64,6 +64,23 @@ def test_one_word_changed_fails_quote_rule():
     assert_downgraded(result, "quote")
 
 
+@pytest.mark.parametrize(
+    "claim, quote, source",
+    [
+        ("The dose is 5 mg twice daily.", "5 mg twice daily", "The recommended dose is 2.5 mg twice daily."),
+        ("Take 10 mg daily.", "10 mg daily", "Take 110 mg daily."),
+        ("Treat for 5 days.", "5 days", "Treat for 35 days."),
+    ],
+)
+def test_quote_cut_from_inside_a_larger_number_fails_quote_rule(claim, quote, source):
+    assert_downgraded(judge(claim, quote, source_text=source), "quote")
+
+
+def test_quote_at_word_edges_still_matches():
+    source = "Overall, 10 mg was well tolerated."
+    assert_passes(judge("10 mg was well tolerated.", "10 mg was well tolerated", source_text=source))
+
+
 def test_empty_quote_fails_quote_rule():
     assert_downgraded(judge("It works.", "", source_text="It works."), "quote")
 
@@ -213,6 +230,15 @@ def test_unmatched_number_is_reported_by_number_rule_only():
 
 def test_same_frequency_different_wording_passes():
     assert_passes(judge("Take it twice daily.", "take it twice a day"))
+
+
+def test_hyphenated_frequency_matches_spaced_frequency():
+    assert_passes(judge("Take 2.5 mg twice-daily.", "take 2.5 mg twice daily"))
+
+
+def test_hyphenated_frequency_mismatch_fails():
+    result = judge("Take 2.5 mg once-daily.", "take 2.5 mg twice daily")
+    assert_downgraded(result, "frequency")
 
 
 def test_different_frequency_fails_frequency_rule():
