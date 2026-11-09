@@ -1,0 +1,70 @@
+{
+  "source": "source.md",
+  "answer": "answer.md",
+  "claims": [
+    {
+      "id": "c1",
+      "claim": "For most patients with nonvalvular atrial fibrillation, Eliquis is taken as 5 mg orally twice daily.",
+      "sentence": "For most patients with nonvalvular atrial fibrillation, Eliquis is taken as 5 mg orally twice daily.",
+      "expected": "supported",
+      "error_type": "none",
+      "quote": "The recommended dose of ELIQUIS for most patients is 5 mg taken orally twice daily."
+    },
+    {
+      "id": "c2",
+      "claim": "Treatment of DVT or PE with Eliquis starts at 10 mg twice daily for the first 7 days.",
+      "sentence": "For DVT or PE, treatment starts at 10 mg twice daily for the first 7 days and then drops to 5 mg twice daily.",
+      "expected": "supported",
+      "error_type": "none",
+      "quote": "The recommended dose of ELIQUIS is 10 mg taken orally twice daily for the first 7 days of therapy."
+    },
+    {
+      "id": "c3",
+      "claim": "After the first 7 days of DVT or PE treatment, the Eliquis dose drops to 5 mg twice daily.",
+      "sentence": "For DVT or PE, treatment starts at 10 mg twice daily for the first 7 days and then drops to 5 mg twice daily.",
+      "expected": "supported",
+      "error_type": "none",
+      "quote": "After 7 days, the recommended dose is 5 mg taken orally twice daily."
+    },
+    {
+      "id": "c4",
+      "claim": "After hip replacement surgery, Eliquis is continued for 30 days to prevent DVT.",
+      "sentence": "After hip replacement surgery, Eliquis is continued for 30 days to prevent DVT.",
+      "expected": "contradicted",
+      "error_type": "changed_number",
+      "quote": "In patients undergoing hip replacement surgery, the recommended duration of treatment is 35 days."
+    },
+    {
+      "id": "c5",
+      "claim": "Eliquis should be stopped at least 48 hours before elective surgery with a moderate or high bleeding risk.",
+      "sentence": "Eliquis should be stopped at least 48 hours before elective surgery with a moderate or high bleeding risk, and bridging anticoagulation is usually needed while it is stopped.",
+      "expected": "supported",
+      "error_type": "none",
+      "quote": "ELIQUIS should be discontinued at least 48 hours prior to elective surgery or invasive procedures with a moderate or high risk of unacceptable or clinically significant bleeding."
+    },
+    {
+      "id": "c6",
+      "claim": "Bridging anticoagulation is usually needed while Eliquis is stopped before surgery.",
+      "sentence": "Eliquis should be stopped at least 48 hours before elective surgery with a moderate or high bleeding risk, and bridging anticoagulation is usually needed while it is stopped.",
+      "expected": "contradicted",
+      "error_type": "reversed_finding",
+      "quote": null
+    },
+    {
+      "id": "c7",
+      "claim": "All patients aged 80 years or older should take the reduced 2.5 mg twice-daily dose of Eliquis.",
+      "sentence": "All patients aged 80 years or older should take the reduced 2.5 mg twice-daily dose.",
+      "expected": "unsupported",
+      "error_type": "overextended_population",
+      "quote": null
+    },
+    {
+      "id": "c8",
+      "claim": "Eliquis can be taken with or without food.",
+      "sentence": "Eliquis can be taken with or without food.",
+      "expected": "unsupported",
+      "error_type": "no_source",
+      "quote": null
+    }
+  ]
+}
