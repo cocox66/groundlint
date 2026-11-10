@@ -37,6 +37,15 @@ def test_folder_loads_only_text_files_sorted(tmp_path):
     assert [s.text for s in loaded] == ["ay", "bee"]
 
 
+def test_answer_file_is_never_its_own_source(tmp_path):
+    (tmp_path / "answer.md").write_text("claim")
+    (tmp_path / "label.md").write_text("source")
+    loaded = load_sources([str(tmp_path)], answer_path=str(tmp_path / "answer.md"))
+    assert [s.text for s in loaded] == ["source"]
+    with pytest.raises(LoadError, match="answer file itself"):
+        load_sources([str(tmp_path / "answer.md")], answer_path=str(tmp_path / "answer.md"))
+
+
 def test_empty_folder_is_an_error(tmp_path):
     with pytest.raises(LoadError, match="no .txt or .md files"):
         load_sources([str(tmp_path)])

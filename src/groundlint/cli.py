@@ -39,7 +39,7 @@ def run(argv: Sequence[str] | None = None, chat: llm.Chat | None = None) -> int:
     args = parser().parse_args(argv)
     try:
         answer = load_answer(args.answer)
-        sources = load_sources(args.sources)
+        sources = load_sources(args.sources, answer_path=args.answer)
         if chat is None:
             config = llm.settings(base_url=args.base_url, model=args.model)
             chat, model = llm.client(config), config.model
