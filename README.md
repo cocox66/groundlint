@@ -120,4 +120,4 @@ The tests don't need an API key. Design notes are in [docs/](docs/).
 
 ## License
 
-MIT.
+MIT. See [LICENSE](LICENSE).
