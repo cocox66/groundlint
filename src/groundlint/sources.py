@@ -70,12 +70,22 @@ def _files(paths: Iterable[str]) -> list[Path]:
     return list(dict.fromkeys(files))  # drop duplicates, keep order
 
 
-def load_sources(paths: Iterable[str] | None) -> list[Source]:
-    """Load every source file, or stop if there are none or they're too large."""
+def load_sources(paths: Iterable[str] | None, answer_path: str | None = None) -> list[Source]:
+    """Load every source file, or stop if there are none or they're too large.
+
+    The answer file is skipped if a source folder contains it, so the answer
+    can never count as evidence for itself.
+    """
     paths = list(paths or [])
     if not paths:
         raise LoadError("no sources given: pass at least one file or folder with --sources")
-    sources = [Source(path=str(f), text=_read(f)) for f in _files(paths)]
+    files = _files(paths)
+    if answer_path and answer_path != "-":
+        answer = Path(answer_path).resolve()
+        files = [f for f in files if f.resolve() != answer]
+        if not files:
+            raise LoadError("the only source given is the answer file itself")
+    sources = [Source(path=str(f), text=_read(f)) for f in files]
     sources = [s for s in sources if s.text.strip()]
     if not sources:
         raise LoadError("every source file is empty")
