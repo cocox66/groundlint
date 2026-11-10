@@ -19,6 +19,14 @@ class Source:
 
 
 @dataclass(frozen=True)
+class Claim:
+    """One atomic claim from the answer, with the sentence it came from."""
+
+    claim: str
+    sentence: str
+
+
+@dataclass(frozen=True)
 class Downgrade:
     """A code rule that turned a `supported` verdict into `unsupported`."""
 
