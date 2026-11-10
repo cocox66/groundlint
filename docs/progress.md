@@ -21,5 +21,5 @@ Tracks which missions are complete and what comes next.
 3. [x] LLM claim extraction and LLM judge.
 4. [x] CLI: the `groundlint` command, with exit codes 0, 1 and 2.
 5. [x] Report: the terminal report and `--json`.
-6. README: install command, PDF conversion tip, confidential-data warning and the "can miss errors" note.
+6. [x] README: install command, PDF conversion tip, confidential-data warning and the "can miss errors" note.
 7. Friends try it, and their feedback is written down.
