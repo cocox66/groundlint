@@ -40,6 +40,34 @@ A record of key project decisions and the reasoning behind them.
 
 **Rejected: leaving them to the LLM judge.** The judge can miss them for the same reason it can miss unit swaps, and both are simple enough for exact text rules.
 
+## 2026-11-09: Default to NVIDIA's endpoint and Nemotron 3 Ultra
+
+**Decision:** The default base URL is `https://integrate.api.nvidia.com/v1` and the default model is `nvidia/nemotron-3-ultra-550b-a55b`. Both can be changed with `--base-url` and `--model` or `GROUNDLINT_BASE_URL` and `GROUNDLINT_MODEL`. The key comes from `GROUNDLINT_API_KEY`, then `NVIDIA_API_KEY`. There is no `--api-key` flag, so the key never lands in shell history.
+
+**Why:** On 2026-11-09, several models in the NVIDIA catalog returned 404 for our key (Nemotron 3 Super, Kimi K2.6, Llama 3.1 Nemotron Ultra) or timed out (DeepSeek V4.1 Flash, gpt-oss-20b, GLM 5.3 Flash). Nemotron 3 Ultra ran each sample in about 35 seconds and got 21 of 22 sample claims right.
+
+**Rejected: Mistral Large 4 (`mistralai/mistral-large-4-1t-a52b`).** It answered a short probe in under 2 seconds, but every full sample run timed out.
+
+## 2026-11-09: Call the API with the standard library
+
+**Decision:** `llm.py` uses `urllib` to call the chat completions endpoint, not the `openai` package.
+
+**Why:** groundlint needs one POST request. Keeping zero runtime dependencies makes the one-command install simpler and avoids version conflicts in users' environments.
+
+**Rejected: the `openai` SDK.** It adds retries and types we don't need yet, plus a dependency tree.
+
+## 2026-11-09: Source size limit of 200,000 characters
+
+**Decision:** The run stops if the sources total more than 200,000 characters (about 50,000 tokens) or the answer is over 20,000. The error gives the actual size and the limit.
+
+**Why:** Each claim gets its own judge call with the full sources, so cost grows with claims × source size. 200,000 characters fits the default model's context with room to spare and covers a few full drug label sections.
+
+## 2026-11-09: One judge call per claim, run in parallel
+
+**Decision:** The judge sees one claim at a time with every source, and up to 6 calls run at once.
+
+**Why:** A single call for all claims is cheaper, but one claim's verdict can bleed into its neighbors, and one bad reply loses every verdict. Per-claim calls keep each verdict independent, and a sample still finishes in under a minute.
+
 ## Later
 
 Not built in v0. Each currently falls back to comparing values only, or isn't checked.
