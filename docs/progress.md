@@ -23,3 +23,8 @@ Tracks which missions are complete and what comes next.
 5. [x] Report: the terminal report and `--json`.
 6. [x] README: install command, PDF conversion tip, confidential-data warning and the "can miss errors" note.
 7. Friends try it, and their feedback is written down.
+
+## Next goal: benchmark on FACTS Grounding
+
+- [x] Step 1 (2026-11-21): 20 medical examples saved to `bench/facts/sample.jsonl` (see [bench/facts/README.md](../bench/facts/README.md)). No LLM calls yet.
+- [ ] Step 2: generate answers and decide what to score groundlint against.

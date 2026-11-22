@@ -68,6 +68,16 @@ A record of key project decisions and the reasoning behind them.
 
 **Why:** A single call for all claims is cheaper, but one claim's verdict can bleed into its neighbors, and one bad reply loses every verdict. Per-claim calls keep each verdict independent, and a sample still finishes in under a minute.
 
+## 2026-11-21: Benchmark on 20 medical FACTS Grounding examples, picked by keyword
+
+**Decision:** `bench/facts/make_sample.py` downloads FACTS Grounding's public examples at a pinned revision. It keeps rows with at least 8 distinct medical terms, draws 20 with a fixed seed and saves them as JSONL. Off-topic rows are excluded by hand, and each exclusion is written in the script with its reason.
+
+**Why:** Our 3 samples are labeled by the person who wrote them. FACTS gives us outside material. The dataset has no domain column, so keywords plus a quick manual check is the cheapest way to make the choice repeatable without LLM calls. A random draw mixes document types better than the top-scoring rows, which are mostly drug-label style. The pinned revision and seed mean every run picks the same 20. JSONL keeps long documents with newlines on one line each, works with the standard library and diffs one example per line.
+
+**Rejected: an LLM topic classifier.** It's more accurate, but it costs calls and its picks are harder to reproduce.
+
+**Open:** FACTS has no answers or labels, so before groundlint can be scored we must generate answers and choose a reference: FACTS's judge prompts or our own labels.
+
 ## Later
 
 Not built in v0. Each currently falls back to comparing values only, or isn't checked.
